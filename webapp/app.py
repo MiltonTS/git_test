@@ -7,6 +7,15 @@ app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'uploads')
 app.config['SECRET_KEY'] = 'changeme'
 DATABASE = os.path.join(app.root_path, 'orders.db')
 
+
+@app.template_filter('display_name')
+def display_name(filename: str) -> str:
+    """Return the original file name from the stored name."""
+    if not filename:
+        return ''
+    parts = filename.split('_', 2)
+    return parts[2] if len(parts) >= 3 else filename
+
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
@@ -24,6 +33,7 @@ def init_db():
         """CREATE TABLE IF NOT EXISTS orders (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT,
+                order_date TEXT,
                 quote_file TEXT,
                 purchase_file TEXT,
                 delivered_file TEXT
@@ -45,8 +55,12 @@ def index():
 def new_order():
     if request.method == 'POST':
         name = request.form['name']
+        order_date = request.form['order_date']
         conn = get_db()
-        conn.execute('INSERT INTO orders (name) VALUES (?)', (name,))
+        conn.execute(
+            'INSERT INTO orders (name, order_date) VALUES (?, ?)',
+            (name, order_date),
+        )
         conn.commit()
         conn.close()
         flash('Order created')
