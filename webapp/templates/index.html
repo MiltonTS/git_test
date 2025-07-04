@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Orders</h1>
+<a class="btn btn-primary" href="{{ url_for('new_order') }}">New Order</a>
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Quote</th>
+            <th>Purchase Order</th>
+            <th>Delivered</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.name }}</td>
+            <td>
+                {% if order.quote_file %}
+                    <a href="{{ url_for('uploaded_file', filename=order.quote_file) }}">View</a>
+                {% else %}
+                    <form action="{{ url_for('upload_file', order_id=order.id, file_type='quote') }}" method="post" enctype="multipart/form-data">
+                        <input type="file" name="file" required>
+                        <button class="btn btn-sm btn-secondary" type="submit">Upload</button>
+                    </form>
+                {% endif %}
+            </td>
+            <td>
+                {% if order.purchase_file %}
+                    <a href="{{ url_for('uploaded_file', filename=order.purchase_file) }}">View</a>
+                {% else %}
+                    <form action="{{ url_for('upload_file', order_id=order.id, file_type='purchase') }}" method="post" enctype="multipart/form-data">
+                        <input type="file" name="file" required>
+                        <button class="btn btn-sm btn-secondary" type="submit">Upload</button>
+                    </form>
+                {% endif %}
+            </td>
+            <td>
+                {% if order.delivered_file %}
+                    <a href="{{ url_for('uploaded_file', filename=order.delivered_file) }}">View</a>
+                {% else %}
+                    <form action="{{ url_for('upload_file', order_id=order.id, file_type='delivered') }}" method="post" enctype="multipart/form-data">
+                        <input type="file" name="file" required>
+                        <button class="btn btn-sm btn-secondary" type="submit">Upload</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
