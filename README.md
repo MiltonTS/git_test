@@ -1,6 +1,6 @@
 # Construction Material Tracker
 
-This project contains a simple Flask web application to track the quote, purchase order and delivery files for construction materials.
+This project contains a simple Flask web application to track the quote, purchase order and delivery files for construction materials. When creating a new order you can record the order date along with the order name.
 
 ## Running the app
 
